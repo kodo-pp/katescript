@@ -1,0 +1,10 @@
+venv
+*.pyc
+*.pyd
+*.pyo
+__pycache__
+.eggs
+*.egg
+*.whl
+*.egg-info
+.*cache*
