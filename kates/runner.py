@@ -114,7 +114,7 @@ class PlainCommand(Command):
             raise NoSuchFunctionError(self.function_name)
         function = runner.functions[self.function_name]
         arguments = [arg.evaluate(runner) for arg in self.arguments]
-        return function(arguments)
+        return function(runner, arguments)
 
     def __eq__(self, other) -> bool:
         if type(self) != type(other):
@@ -150,7 +150,7 @@ class If(Command):
 
     def run(self, runner: 'Runner') -> str:
         result = self.command.run(runner)
-        condition = (result != '0' and result != '')
+        condition = (result == '0' or result == '')
         runner.push_no_execution_state(condition)
         return ''
 
@@ -209,30 +209,30 @@ class Script:
         return f'Script({self.commands})'
 
 
-def builtin_id(args: List[str]) -> str:
+def builtin_id(runner: 'Runner', args: List[str]) -> str:
     if len(args) != 1:
         raise ArgumentsError()
     return args[0]
 
 
-def builtin_equals(args: List[str]) -> str:
+def builtin_equals(runner: 'Runner', args: List[str]) -> str:
     if len(args) != 2:
         raise ArgumentsError()
     return '1' if args[0] == args else '0'
 
 
-def builtin_not_equals(args: List[str]) -> str:
+def builtin_not_equals(runner: 'Runner', args: List[str]) -> str:
     if len(args) != 2:
         raise ArgumentsError()
     return '0' if args[0] == args else '1'
 
 
-def builtin_nop(args: List[str]) -> str:
+def builtin_nop(runner: 'Runner', args: List[str]) -> str:
     del args
     return ''
 
 
-FunctionType = Callable[[List[str]], str]
+FunctionType = Callable[['Runner', List[str]], str]
 ExecutionStopReason = NewType('ExecutionStopReason', str)
 
 
@@ -268,7 +268,7 @@ class Runner:
         self._no_execution_stack.pop()
 
     def get_no_execution_state(self):
-        return self._no_execution_stack[-1]
+        return any(self._no_execution_stack)
 
     def switch_no_execution_state(self):
         self._no_execution_stack[-1] = not self._no_execution_stack[-1]
