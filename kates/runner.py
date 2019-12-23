@@ -218,13 +218,13 @@ def builtin_id(runner: 'Runner', args: List[str]) -> str:
 def builtin_equals(runner: 'Runner', args: List[str]) -> str:
     if len(args) != 2:
         raise ArgumentsError()
-    return '1' if args[0] == args else '0'
+    return '1' if args[0] == args[1] else '0'
 
 
 def builtin_not_equals(runner: 'Runner', args: List[str]) -> str:
     if len(args) != 2:
         raise ArgumentsError()
-    return '0' if args[0] == args else '1'
+    return '0' if args[0] == args[1] else '1'
 
 
 def builtin_nop(runner: 'Runner', args: List[str]) -> str:

@@ -211,3 +211,38 @@ def test_if():
     ).run() == 'end'
 
     assert ''.join(a) == '.5789.5689.1349.1249'
+
+
+def test_inexistent_function():
+    functions = {}
+    script = Script([
+        PlainCommand('inexistent_function', []),
+    ])
+    
+    with pytest.raises(ScriptExecutionError) as exc_info:
+        Runner(functions, script).run()
+
+    assert isinstance(exc_info.value.err, NoSuchFunctionError)
+
+
+def test_inexistent_variable(): 
+    functions = {'ignore': lambda r, a: ''}
+    script = Script([
+        PlainCommand('ignore', [VariableArgument('inexistent_variable')]),
+    ])
+    
+    with pytest.raises(ScriptExecutionError) as exc_info:
+        Runner(functions, script).run()
+
+    assert isinstance(exc_info.value.err, NoSuchVariableError)
+
+
+def test_stray_endif(): 
+    script = Script([
+        Endif(),
+    ])
+    
+    with pytest.raises(ScriptExecutionError) as exc_info:
+        Runner({}, script).run()
+
+    assert isinstance(exc_info.value.err, StrayEndifError)
