@@ -3,6 +3,14 @@
 scripting language written specially to be used in UnderKate game
 (yet to be developed as for 12/22/2019).
 
+## Update 09 February 2020
+This ~~wonderful~~ awful scripting language is no longer used by UnderKate (which is
+still under active development), so I'm archiving this repo. I won't consider deleting
+it right now, but one should realize that if you want a scripting language for
+Python programs which supports cooperative multitasking (which was the point of
+creating KateScript), then Python coroutines (async functions) might be what you want.
+So, there might simply be no point in using KateScript.
+
 ## Syntax
 
 A program consists of zero or more statements, each written on its own line.
